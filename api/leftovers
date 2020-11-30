@@ -1,0 +1,48 @@
+@app.route("/whatever")
+def whatever():
+    args = request.args
+    res = {}
+    for k,v in args.items():
+        res[f"Entonces el valor de {k} es"] = v
+    if "fuck" in args.keys():
+        return {"Very Bad": "I'll tell your mom"}
+    return res
+
+@app.route("/stats")
+def avg_std():
+    args = dict(request.args) 
+    for k,v in args.items():
+        try:
+            args[k] = float[v]
+        except:
+            pass
+    print(args)
+    nums = [v for f in args.values() if type(v) == float]
+    print(nums)
+    return {
+        "mean": mean(nums),
+        "stdev":stdev(nums)
+    }
+
+@app.route("/hello")
+def salute():
+    name = request.args.get("name")
+    lastname = request.args.get("lastname")
+    if not name:
+        if not lastname:
+            return "Hello, stranger"
+        return f"Hello, Mr./Mrs. {lastname}"
+    if not lastname:
+        lastname = 0
+    return f"Hello, {name} {lastname}"
+
+
+from statistics import mean, stdev
+
+
+@app.route("/g", methods=['GET'])
+def g():
+    if request.method != 'GET':
+        return make_response('Malformed request', 400)
+    headers = {"Content-Type": "application/json"}
+    return make_response('it worked!', 200, headers)
